@@ -4,6 +4,8 @@ Facultado de Ingeniería - Universidad de Buenos Aires
 
 Integrantes:
 
-Battan Manuel
-Inoriza Pablo
-Zuretti Agustín
+<ul>
+<li>Battan Manuel</li>
+<li>Inoriza Pablo</li>
+<li>Zuretti Agustín</li>
+</ul>
