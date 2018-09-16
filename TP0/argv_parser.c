@@ -18,8 +18,8 @@ void help() {
 "Usage:\n\
   tp0 -h\n\
   tp0 -V\n\
-  tp0 [options]\n\
-Options:\n\
+  tp0 [answer]\n\
+answer:\n\
   -V, --version   Print version and quit.\n\
   -h, --help      Print this information.\n\
   -i, --input     Location of the input file.\n\
@@ -42,63 +42,63 @@ void version() {
 }
 
 void
-  do_output(const char* optarg, option_t* options)
+  do_output(const char* optarg, select_t* answer)
   {
-      options->output_file_descriptor = open(optarg, O_WRONLY | O_CREAT, 0640);
-        if (options->output_file_descriptor == -1) {
+      answer->outputFile = open(optarg, O_WRONLY | O_CREAT, 0640);
+        if (answer->outputFile == -1) {
           fprintf(stderr, "Filename Error: Cannot open %s to write.\n", optarg);
-           close(options->input_file_descriptor);
+           close(answer->inputFile);
           exit(2);
         }
   }
 
 void 
-  do_input(const char* optarg, option_t* options)
+  do_input(const char* optarg, select_t* answer)
   {
-    options->input_file_descriptor = open(optarg, O_RDONLY);
-        if (options->input_file_descriptor == -1) {
+    answer->inputFile = open(optarg, O_RDONLY);
+        if (answer->inputFile == -1) {
           fprintf(stderr, "Filename Error: Cannot open %s to read.\n", optarg);
-          close(options->output_file_descriptor);
+          close(answer->outputFile);
           exit(1);
         }
   }
 
 void 
-  do_actions(const char* optarg, option_t* options)
+  do_actions(const char* optarg, select_t* answer)
   {
     if (strcmp(optarg, "encode") && strcmp(optarg, "decode")) {
           fprintf(stderr, "Action Error: %s is not a valid action.\n", optarg);
-          close_files(options);
+          close_files(answer);
           exit(3);
         }
-        options->should_decode = !!strcmp(optarg, "encode");
+        answer->decode = !!strcmp(optarg, "encode");
   }
 
 void 
-    do_unknown(int optopt, option_t* options)
+    do_unknown(int optopt, select_t* answer)
     {
       if (optopt == 'i' || optopt == 'o')
-          fprintf(stderr, "Option -%c requires an filename argument.\n", optopt);
+          fprintf(stderr, "select -%c requires an filename argument.\n", optopt);
         else if (optopt == 'a')
           fprintf(stderr,
-            "Option -%c requires either 'decode' or 'encode' options.\n", optopt);
+            "select -%c requires either 'decode' or 'encode' answer.\n", optopt);
         else if (isprint (optopt))
-          fprintf(stderr, "Unknown option `-%c'.\n", optopt);
+          fprintf(stderr, "Unknown select `-%c'.\n", optopt);
         else
-          fprintf(stderr, "Unknown option character `\\x%x'.\n", optopt);
-        close_files(options);
+          fprintf(stderr, "Unknown select character `\\x%x'.\n", optopt);
+        close_files(answer);
         exit(4);
     }
 
 // Based on
 // https://www.gnu.org/software/libc/manual/html_node/Example-of-Getopt.html
-void parse_options(int argc, char** argv, option_t* options) {
+void parseAnswer(int argc, char** argv, select_t* answer) {
   
-  int seen_option;
-  int option_index = 0;
+  int ch;
+  int cIndex = 0;
   opterr = 0;
   
-  static struct option long_options[] = {
+  static struct option long_answer[] = {
       {"version", no_argument,       NULL, 'V'},
       {"help",    no_argument,       NULL, 'h'},
       {"input",   required_argument, NULL, 'i'},
@@ -106,14 +106,14 @@ void parse_options(int argc, char** argv, option_t* options) {
       {"action",  required_argument, NULL, 'a'}
   };
   
-  while ((seen_option = getopt_long(argc, argv, "Vhi:o:a:",
-                              long_options ,&option_index))!= -1) 
+  while ((ch = getopt_long(argc, argv, "Vhi:o:a:",
+                              long_answer ,&cIndex))!= -1) 
   {
-    /* Detect the end of the options. */
-    if (seen_option == -1)
+    /* Detect the end of the answer. */
+    if (ch == -1)
       break;
 
-    switch (seen_option) {
+    switch (ch) {
       case 'V':
         version();
         exit(0);
@@ -123,19 +123,19 @@ void parse_options(int argc, char** argv, option_t* options) {
         exit(0);
 
       case 'i':
-        do_input(optarg, options);
+        do_input(optarg, answer);
         break;
 
       case 'o':
-        do_output(optarg, options);
+        do_output(optarg, answer);
         break;
 
       case 'a':
-        do_actions(optarg, options);
+        do_actions(optarg, answer);
         break;
 
       case '?':
-        do_unknown(optopt, options);
+        do_unknown(optopt, answer);
         break;
 
       default:
@@ -144,18 +144,18 @@ void parse_options(int argc, char** argv, option_t* options) {
   }
 
   if (optind < argc) {
-    printf("non-option ARGV-elements: ");
+    printf("non-select ARGV-elements: ");
     while (optind < argc) printf("%s ", argv[optind++]);
     putchar('\n');
   }
 }
 
-void close_files(option_t* options) {
-  int input_error = close(options->input_file_descriptor) == -1;
+void close_files(select_t* answer) {
+  int input_error = close(answer->inputFile) == -1;
   if (input_error)
     fprintf(stderr, "Error encountered while closing input file\n");
 
-  int output_error = close(options->output_file_descriptor) == -1;
+  int output_error = close(answer->outputFile) == -1;
   if (output_error) {
     fprintf(stderr, "Error encountered while closing output file\n");
     exit(input_error | output_error);

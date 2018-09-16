@@ -5,12 +5,12 @@
 #include <stdbool.h>
 
 typedef struct {
-  int input_file_descriptor;
-  int output_file_descriptor;
-  bool should_decode;
-} option_t;
+  int inputFile;
+  int outputFile;
+  bool decode;
+} select_t;
 
-void parse_options(int argc, char** argv, option_t* options);
-void close_files(option_t* options);
+void parseAnswer(int argc, char** argv, select_t* choice);
+void close_files(select_t* choice);
 
 #endif
