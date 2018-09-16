@@ -1,5 +1,10 @@
 #include <stdio.h>
 #include <getopt.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 void print_help(){
 	printf(
@@ -38,7 +43,10 @@ Miembros del grupo:\n\
 
 void main(int argc, char **argv){
 	int c;
-	c = getopt(argc, argv, "Vhd:");
+	int input_file;
+	int output_file;
+
+	c = getopt(argc, argv, "Vhi:o:a:");
 
 	switch(c){
 		case 'V':
@@ -47,8 +55,19 @@ void main(int argc, char **argv){
 		case 'h':
 			print_help();
 			break;
-		case 'b':
-			printf("Opción B\n");
+		case 'i':
+			input_file = open(optarg, O_RDONLY);
+			if (input_file == -1) {
+        		fprintf(stderr, "Filename Error: Cannot open %s to read.\n", optarg);
+        		close(output_file);
+        	}
 			break;
+		case 'o':
+			output_file = open(optarg, O_WRONLY | O_CREAT);
+			if (output_file == -1) {
+        		fprintf(stderr, "Filename Error: Cannot open %s to write.\n", optarg);
+      			close(input_file);
+       		}
+       		break;
 	}
 }
