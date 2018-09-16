@@ -19,9 +19,9 @@ void help() {
   tp0 -h\n\
   tp0 -V\n\
   tp0 [answer]\n\
-answer:\n\
-  -V, --version   Print version and quit.\n\
+choice:\n\
   -h, --help      Print this information.\n\
+  -V, --version   Print version and quit.\n\
   -i, --input     Location of the input file.\n\
   -o, --output    Location of the output file.\n\
   -a, --action    Program action: encode (default) or decode.\n\
@@ -46,7 +46,7 @@ void
   {
       answer->outputFile = open(optarg, O_WRONLY | O_CREAT, 0640);
         if (answer->outputFile == -1) {
-          fprintf(stderr, "Filename Error: Cannot open %s to write.\n", optarg);
+          fprintf(stderr, "Error de escritura: No se puede abrir el archivo %s \n", optarg);
            close(answer->inputFile);
           exit(2);
         }
@@ -57,7 +57,7 @@ void
   {
     answer->inputFile = open(optarg, O_RDONLY);
         if (answer->inputFile == -1) {
-          fprintf(stderr, "Filename Error: Cannot open %s to read.\n", optarg);
+          fprintf(stderr, "Error de lectura: No se puede abrir el archivo %s.\n", optarg);
           close(answer->outputFile);
           exit(1);
         }
@@ -66,8 +66,8 @@ void
 void 
   do_actions(const char* optarg, select_t* answer)
   {
-    if (strcmp(optarg, "encode") && strcmp(optarg, "decode")) {
-          fprintf(stderr, "Action Error: %s is not a valid action.\n", optarg);
+    if (strcmp(optarg, "decode") && strcmp(optarg, "encode")) {
+          fprintf(stderr, "Error: %s no se puede realizar.\n", optarg);
           close_files(answer);
           exit(3);
         }
@@ -77,15 +77,14 @@ void
 void 
     do_unknown(int optopt, select_t* answer)
     {
-      if (optopt == 'i' || optopt == 'o')
-          fprintf(stderr, "select -%c requires an filename argument.\n", optopt);
-        else if (optopt == 'a')
-          fprintf(stderr,
-            "select -%c requires either 'decode' or 'encode' answer.\n", optopt);
+        if (optopt == 'a') 
+          fprintf(stderr, "desea decodificar o codificar? ");
+        else if (optopt == 'i' || optopt == 'o')
+          fprintf(stderr, " Falta el nombre del archivo.\n");
         else if (isprint (optopt))
-          fprintf(stderr, "Unknown select `-%c'.\n", optopt);
+          fprintf(stderr, "opcion equivocada");
         else
-          fprintf(stderr, "Unknown select character `\\x%x'.\n", optopt);
+          fprintf(stderr, "caracter desconocido");
         close_files(answer);
         exit(4);
     }
@@ -153,11 +152,11 @@ void parseAnswer(int argc, char** argv, select_t* answer) {
 void close_files(select_t* answer) {
   int input_error = close(answer->inputFile) == -1;
   if (input_error)
-    fprintf(stderr, "Error encountered while closing input file\n");
+    fprintf(stderr, "No se puedo cerrar el archivo input\n");
 
   int output_error = close(answer->outputFile) == -1;
   if (output_error) {
-    fprintf(stderr, "Error encountered while closing output file\n");
+    fprintf(stderr, "No se puedo cerrar el archivo output\n");
     exit(input_error | output_error);
   }
 }
