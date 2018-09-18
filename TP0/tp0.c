@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <unistd.h>
-#include "argv_parser.h"
+#include "parser.h"
 int DECODE_CHAR_ERROR = 5;
 int DECODE_ERROR = 6;
 int ERROR = -1;
@@ -57,7 +57,7 @@ int readB(int input, char* buf, int bytes) {
   return bytes;
 }
 
-void writeB(int output, char* buf, int bytes) {
+void write_Bytes(int output, char* buf, int bytes) {
   if (write(output, buf, bytes) != bytes) {
     fprintf(stderr, "Error de escritura: faltaron bytes");
     close_files(&choice);
@@ -119,12 +119,12 @@ int main (int argc, char** argv) {
         base64decode(input, output);
       }
      
-      writeB(choice.outputFile, output, writeLenght);
+      write_Bytes(choice.outputFile, output, writeLenght);
 
       if (stop) break;
     }
 
-    while (bytesToFinish--) write_bytes(choice.outputFile, &PADDING_CH, 1);
+    while (bytesToFinish--) write_Bytes(choice.outputFile, &PADDING_CH, 1);
 
     close_files(&choice);
     return 0;
