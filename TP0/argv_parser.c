@@ -3,12 +3,10 @@
 #include <getopt.h>
 #include <string.h>
 #include <ctype.h>
-
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
-
 #include "argv_parser.h"
 
 void help() {
@@ -37,7 +35,7 @@ void version() {
       Inoriza, Pablo\n\
       Zuretti, Agustin Santiago\n\
       Battan, Manuel Victoriano\n\
-      TP0 - Version 1.3\n"
+      "
   );
 }
 
@@ -143,7 +141,7 @@ void parseAnswer(int argc, char** argv, select_t* answer) {
   }
 
   if (optind < argc) {
-    printf("non-select ARGV-elements: ");
+    printf("Error: opcion mal ingresada");
     while (optind < argc) printf("%s ", argv[optind++]);
     putchar('\n');
   }
