@@ -11,7 +11,7 @@ char PADDING_CH = '=';
 
 select_t choice = { STDIN_FILENO, STDOUT_FILENO, false };
 
-char base64chars[64] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+char base64chars[65] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 char decode_ch(char DecodeChar) {
   const char BASE_64_INDEX_a = 26;
@@ -124,7 +124,7 @@ int main (int argc, char** argv) {
       if (stop) break;
     }
 
-    while (bytesToFinish--) write(choice.outputFile, &PADDING_CH, 1);
+    while (bytesToFinish--) write_bytes(choice.outputFile, &PADDING_CH, 1);
 
     close_files(&choice);
     return 0;
