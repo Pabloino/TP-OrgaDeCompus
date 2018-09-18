@@ -5,6 +5,8 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <stdbool.h>
+#include <string.h>
 
 void print_help(){
 	printf(
@@ -41,10 +43,29 @@ Miembros del grupo:\n\
 	);
 }
 
+void encode(char* text){
+	char base64_alphabet[64] = {
+		'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 
+		'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 
+		'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+		'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
+		'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
+		'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+		'w', 'x', 'y', 'z', '0', '1', '2', '3',
+		'4', '5', '6', '7', '8', '9', '+', '/'
+	};
+
+	printf("%d\n", text[0]);
+	printf("%s\n", toBinary(72));
+}
+
 void main(int argc, char **argv){
 	int c;
 	int input_file;
 	int output_file;
+	bool decode;
+
+	encode("Hola");
 
 	c = getopt(argc, argv, "Vhi:o:a:");
 
@@ -67,6 +88,11 @@ void main(int argc, char **argv){
 			if (output_file == -1) {
         		fprintf(stderr, "Filename Error: Cannot open %s to write.\n", optarg);
       			close(input_file);
+       		}
+       		break;
+       	case 'a':
+       		if (strcmp(optarg,"decode")){
+       			decode = true;
        		}
        		break;
 	}
