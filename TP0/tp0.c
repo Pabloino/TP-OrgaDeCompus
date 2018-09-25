@@ -7,22 +7,22 @@
 int DECODE_CHAR_ERROR = 5;
 int DECODE_ERROR = 6;
 int ERROR = -1;
-char PADDING_CH = '=';
+unsigned char PADDING_CH = '=';
 
 select_t choice = { STDIN_FILENO, STDOUT_FILENO, false };
 
 char base64chars[65] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-char decode_ch(char DecodeChar) {
+char decode_ch(unsigned char DecodeChar) {
   const char BASE_64_INDEX_a = 26;
   const char BASE_64_INDEX_0 = 52;
 
   if (DecodeChar >= 'a') return DecodeChar - 'a' + BASE_64_INDEX_a;
-  
+
   if (DecodeChar >= 'A') return DecodeChar - 'A';
-  
+
   if (DecodeChar >= '0') return DecodeChar - '0' + BASE_64_INDEX_0;
-  
+
   if (DecodeChar != '/' && DecodeChar != '+' && DecodeChar != '=') {
     fprintf(stderr, "Error de Decodificacion: no se puede decodificar %c\n", DecodeChar);
     close_files(&choice);
@@ -30,19 +30,19 @@ char decode_ch(char DecodeChar) {
   }
   return 62 + DecodeChar == '/';
 }
-void base64encode(char* input, char* output) {
- 
+void base64encode(unsigned char* input, unsigned char* output) {
+
   output[0] = input[0] >> 2;
   output[1] = ((input[0] % 4) << 4) | (input[1] >> 4);
   output[2] = ((input[1] % 16) << 2) | (input[2] >> 6);
   output[3] = input[2] % 64;
-  
+
   for (int i = 0; i < 4 ; i++){
     output[i] = base64chars[(uint8_t) output[i]];
   }
-  
+
 }
-void base64decode(char* encoded_input, char* output) {
+void base64decode(unsigned char* encoded_input, unsigned char* output) {
 
   for (int i = 0; i < 4 ; i++){
     encoded_input[i] = decode_ch(encoded_input[i]);
@@ -52,12 +52,12 @@ void base64decode(char* encoded_input, char* output) {
   output[1] = (encoded_input[1] % 16) << 4 | (encoded_input[2] >> 2);
   output[2] = (encoded_input[2] % 4) << 6 | (encoded_input[3] % 64);
 }
-int readB(int input, char* buf, int bytes) {
+int readB(int input, unsigned char* buf, int bytes) {
   while (read(input, buf, 1) && --bytes) buf++;
   return bytes;
 }
 
-void write_Bytes(int output, char* buf, int bytes) {
+void write_Bytes(int output, unsigned char* buf, int bytes) {
   if (write(output, buf, bytes) != bytes) {
     fprintf(stderr, "Error de escritura: faltaron bytes");
     close_files(&choice);
@@ -65,7 +65,7 @@ void write_Bytes(int output, char* buf, int bytes) {
   }
 }
 
-int padding_count(char* input, int size) {
+int padding_count(unsigned char* input, int size) {
   int count = 0;
   for (int i = 0; i < size; i++)
   {
@@ -74,7 +74,7 @@ int padding_count(char* input, int size) {
   return count;
 }
 
-void checkDecodingError(char* inputBuf) {
+void checkDecodingError(unsigned char* inputBuf) {
   if (inputBuf[0] == PADDING_CH || inputBuf[1] == PADDING_CH ||
     (inputBuf[2] == PADDING_CH && inputBuf[3] != PADDING_CH)) {
     fprintf(stderr, "Error de decodificacion: largo de mensaje incorrecto.\n");
@@ -91,8 +91,8 @@ int main (int argc, char** argv) {
     int writeLenght;
 
     while (!bytesToFinish) {
-      char input[4] = {0};
-      char output[4] = {0};
+      unsigned char input[4] = {0};
+      unsigned char output[4] = {0};
 
       bytesToFinish = readB(choice.inputFile, input, maxToRead);
 
@@ -118,7 +118,7 @@ int main (int argc, char** argv) {
       else{
         base64decode(input, output);
       }
-     
+
       write_Bytes(choice.outputFile, output, writeLenght);
 
       if (stop) break;

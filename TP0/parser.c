@@ -50,7 +50,7 @@ void
         }
   }
 
-void 
+void
   do_input(const char* optarg, select_t* answer)
   {
     answer->inputFile = open(optarg, O_RDONLY);
@@ -61,7 +61,7 @@ void
         }
   }
 
-void 
+void
   do_actions(const char* optarg, select_t* answer)
   {
     if (strcmp(optarg, "decode") && strcmp(optarg, "encode")) {
@@ -72,10 +72,10 @@ void
         answer->decode = !!strcmp(optarg, "encode");
   }
 
-void 
+void
     do_unknown(int optopt, select_t* answer)
     {
-        if (optopt == 'a') 
+        if (optopt == 'a')
           fprintf(stderr, "desea decodificar o codificar? ");
         else if (optopt == 'i' || optopt == 'o')
           fprintf(stderr, " Falta el nombre del archivo.\n");
@@ -90,11 +90,11 @@ void
 // Based on
 // https://www.gnu.org/software/libc/manual/html_node/Example-of-Getopt.html
 void parseAnswer(int argc, char** argv, select_t* answer) {
-  
+
   int ch;
   int cIndex = 0;
   opterr = 0;
-  
+
   static struct option long_answer[] = {
       {"version", no_argument,       NULL, 'V'},
       {"help",    no_argument,       NULL, 'h'},
@@ -102,9 +102,9 @@ void parseAnswer(int argc, char** argv, select_t* answer) {
       {"output",  required_argument, NULL, 'o'},
       {"action",  required_argument, NULL, 'a'}
   };
-  
+
   while ((ch = getopt_long(argc, argv, "Vhi:o:a:",
-                              long_answer ,&cIndex))!= -1) 
+                              long_answer ,&cIndex))!= -1)
   {
     /* Detect the end of the answer. */
     if (ch == -1)
