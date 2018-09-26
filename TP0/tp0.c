@@ -14,8 +14,8 @@ select_t choice = { STDIN_FILENO, STDOUT_FILENO, false };
 char base64chars[65] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 char decode_ch(unsigned char DecodeChar) {
-  const char BASE_64_INDEX_a = 26;
-  const char BASE_64_INDEX_0 = 52;
+  const unsigned char BASE_64_INDEX_a = 26;
+  const unsigned char BASE_64_INDEX_0 = 52;
 
   if (DecodeChar >= 'a') return DecodeChar - 'a' + BASE_64_INDEX_a;
 
@@ -28,7 +28,8 @@ char decode_ch(unsigned char DecodeChar) {
     close_files(&choice);
     exit(DECODE_CHAR_ERROR);
   }
-  return 62 + DecodeChar == '/';
+  if (DecodeChar == '/') return 63;
+  return 62;
 }
 void base64encode(unsigned char* input, unsigned char* output) {
 
@@ -115,7 +116,7 @@ int main (int argc, char** argv) {
       if (!choice.decode){
         base64encode(input, output);
       }
-      else{
+      else {
         base64decode(input, output);
       }
 

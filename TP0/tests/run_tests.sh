@@ -4,3 +4,4 @@
 ./tests/03-wrong-parameters.sh
 ./tests/04-bad-decode-input.sh
 ./tests/05-Encode-and-decode-with-no-changes.sh
+./tests/06-encode-and-decode-binary.sh
