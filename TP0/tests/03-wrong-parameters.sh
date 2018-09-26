@@ -1,7 +1,7 @@
 TP_NAME='tp0';
 
 OUTPUT=`./$TP_NAME -b 2>&1`;
-TEST_DESCRIPTION='Send unknown option';
+TEST_DESCRIPTION='El decoder rechaza opciones desconocidas';
 
 if [ "$OUTPUT" == "opcion equivocada" ]
 then
@@ -11,7 +11,7 @@ else
 fi
 
 OUTPUT=`./$TP_NAME --action undecode 2>&1`;
-TEST_DESCRIPTION='Send wrong action name';
+TEST_DESCRIPTION='El decoder rechaza acciones desconocidas';
 
 if [ "$OUTPUT" == "Error: undecode no se puede realizar." ]
 then

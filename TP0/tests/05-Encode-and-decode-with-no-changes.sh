@@ -1,6 +1,6 @@
 TP_NAME='tp0';
 
-TEST_DESCRIPTION='Sending a word, encoding, then decoding and the word must be de same';
+TEST_DESCRIPTION='Codificar y decodificar texto debe preservar el input original';
 
 ENCODING_WORD='Man';
 

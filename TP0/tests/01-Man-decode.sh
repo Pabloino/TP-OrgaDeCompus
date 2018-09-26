@@ -1,7 +1,7 @@
 TP_NAME='tp0';
 
 OUTPUT=`echo -n TWFu | ./$TP_NAME -a decode`;
-TEST_DESCRIPTION='Decoding "TWFu"';
+TEST_DESCRIPTION='Decodificar "TWFu"';
 
 if [ $OUTPUT == "Man" ]
 then
@@ -11,7 +11,7 @@ else
 fi
 
 OUTPUT=`echo -n TWE= | ./$TP_NAME -a decode`;
-TEST_DESCRIPTION='Decoding "TWE="';
+TEST_DESCRIPTION='Decodificar "TWE="';
 
 if [ $OUTPUT == "Ma" ]
 then
@@ -21,7 +21,7 @@ else
 fi
 
 OUTPUT=`echo -n TQ== | ./$TP_NAME -a decode`;
-TEST_DESCRIPTION='Decoding "TQ=="';
+TEST_DESCRIPTION='Decodificar "TQ=="';
 
 if [ $OUTPUT == "M" ]
 then

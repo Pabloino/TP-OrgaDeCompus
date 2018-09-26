@@ -1,7 +1,7 @@
 TP_NAME='tp0';
 
 OUTPUT=`echo -n Man | ./$TP_NAME`;
-TEST_DESCRIPTION='Encoding "Man"';
+TEST_DESCRIPTION='Codificar "Man"';
 
 if [ $OUTPUT == "TWFu" ]
 then
@@ -11,7 +11,7 @@ else
 fi
 
 OUTPUT=`echo -n Ma | ./$TP_NAME`;
-TEST_DESCRIPTION='Encoding "Ma"';
+TEST_DESCRIPTION='Codificar "Ma"';
 
 if [ $OUTPUT == "TWE=" ]
 then
@@ -21,7 +21,7 @@ else
 fi
 
 OUTPUT=`echo -n M | ./$TP_NAME`;
-TEST_DESCRIPTION='Encoding "M"';
+TEST_DESCRIPTION='Codificar "M"';
 
 if [ $OUTPUT == "TQ==" ]
 then
