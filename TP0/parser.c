@@ -42,6 +42,10 @@ void version() {
 void
   do_output(const char* optarg, select_t* answer)
   {
+      if (strcmp(optarg, "-") == 0) {
+        answer->outputFile = STDOUT_FILENO;
+        return;
+      }
       answer->outputFile = open(optarg, O_WRONLY | O_CREAT, 0640);
         if (answer->outputFile == -1) {
           fprintf(stderr, "Error de escritura: No se puede abrir el archivo %s \n", optarg);
@@ -53,6 +57,10 @@ void
 void
   do_input(const char* optarg, select_t* answer)
   {
+    if (strcmp(optarg, "-") == 0) {
+      answer->inputFile = STDIN_FILENO;
+      return;
+    }
     answer->inputFile = open(optarg, O_RDONLY);
         if (answer->inputFile == -1) {
           fprintf(stderr, "Error de lectura: No se puede abrir el archivo %s.\n", optarg);
