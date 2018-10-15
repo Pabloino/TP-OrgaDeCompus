@@ -6,4 +6,4 @@
   * Battan, Manuel Victoriano (95851)  
 
 ## compilacion  
-  para correr ejecutar make, luego ./tp0 --h para todas las opciones
+  para correr ejecutar make, luego ./tp1 --h para todas las opciones
