@@ -2,40 +2,29 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <unistd.h>
-
-#include "argv_parser.h"
+#include "parser.h"
 #include "base64.h"
+unsigned char PADDING_CH = '=';
 
-option_t options = { STDIN_FILENO, STDOUT_FILENO, false };
+select_t choice = { STDIN_FILENO, STDOUT_FILENO, false };
 
-char encode_table[64] = {
-  'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
-  'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
-  'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
-  'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
-  'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
-  'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
-  'w', 'x', 'y', 'z', '0', '1', '2', '3',
-  '4', '5', '6', '7', '8', '9', '+', '/'
-};
-
-char PADDING_SYMBOL = '=';
+char base64chars[65] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 int main(int argc, char** argv) {
 
-    parse_options(argc, argv, &options);
+    parse_options(argc, argv, &choice);
 
     int base64_output;
 
-    if (options.should_decode) {
+    if (choice.decode) {
         base64_output = base64_decode(
-            options.input_file_descriptor,
-            options.output_file_descriptor
+            choice.inputFile,
+            choice.outputFile
         );
     } else {
         base64_output = base64_encode(
-            options.input_file_descriptor,
-            options.output_file_descriptor
+            choice.inputFile,
+            choice.outputFile
         );
     }
 
@@ -43,6 +32,6 @@ int main(int argc, char** argv) {
         fprintf(stderr, "%s", ERROR_MSG[base64_output]);
     }
 
-    close_files(&options);
+    close_files(&choice);
     return 0;
 }
