@@ -118,32 +118,32 @@ encode:
 
 translate_to_symbols:
 
-	la	t0, encode_table	# t0 = encode_table
+	la	t0, base64chars	# t0 = base64chars
 	la	t1, output_buffer	# t1 = output
 	lbu	t2, 0(t1)		# t2 = output[0]
 	addu	t0, t0, t2		#
-	lb	t0, 0(t0)		# t0 = encode_table[t2]
+	lb	t0, 0(t0)		# t0 = base64chars[t2]
 	sb	t0, 0(t1)		# output[0] = t0
 
-	la	t0, encode_table	# t0 = encode_table
+	la	t0, base64chars	# t0 = base64chars
 	la	t1, output_buffer	# t1 = output
 	lbu	t2, 1(t1)		# t2 = output[1]
 	addu	t0, t0, t2		#
-	lb	t0, 0(t0)		# t0 = encode_table[t2]
+	lb	t0, 0(t0)		# t0 = base64chars[t2]
 	sb	t0, 1(t1)		# output[1] = t0
 
-	la	t0, encode_table	# t0 = encode_table
+	la	t0, base64chars	# t0 = base64chars
 	la	t1, output_buffer	# t1 = output
 	lbu	t2, 2(t1)		# t2 = output[2]
 	addu	t0, t0, t2		#
-	lb	t0, 0(t0)		# t0 = encode_table[t2]
+	lb	t0, 0(t0)		# t0 = base64chars[t2]
 	sb	t0, 2(t1)		# output[2] = t0
 
-	la	t0, encode_table	# t0 = encode_table
+	la	t0, base64chars	# t0 = base64chars
 	la	t1, output_buffer	# t1 = output
 	lbu	t2, 3(t1)		# t2 = output[3]
 	addu	t0, t0, t2		#
-	lb	t0, 0(t0)		# t0 = encode_table[t2]
+	lb	t0, 0(t0)		# t0 = base64chars[t2]
 	sb	t0, 3(t1)		# output[3] = t0
 
 add_padding:
