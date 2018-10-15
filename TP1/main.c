@@ -12,7 +12,7 @@ char base64chars[65] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123
 
 int main(int argc, char** argv) {
 
-    parse_options(argc, argv, &choice);
+    parseAnswer(argc, argv, &choice);
 
     int base64_output;
 
@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
     }
 
     if (base64_output) {
-        fprintf(stderr, "%s", ERROR_MSG[base64_output]);
+        fprintf(stderr, "%s", errmsg[base64_output]);
     }
 
     close_files(&choice);
