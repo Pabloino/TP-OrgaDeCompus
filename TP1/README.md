@@ -1,4 +1,4 @@
-# 66.20 Organización de Computadoras - tp0
+# 66.20 Organización de Computadoras - tp1
 
 ## Team Members:  
   * Inoriza, Pablo  
