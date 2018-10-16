@@ -45,7 +45,7 @@ validation:
 continue_read:
     lw	    a0, (STACK_SIZE)(sp)
     la	    a1, input + 1
-	li	    a2, 1
+    li	    a2, 1
     li	    v0, SYS_read
     syscall
     beq     a3, zero, validation_2
@@ -55,10 +55,10 @@ continue_read:
 validation_2:
     addu    s2, s2, v0
     lw      a0, (STACK_SIZE)(sp)
-	la	    a1, input + 2
-	li	    a2, 1
-	li	    v0, SYS_read
-	syscall
+    la	    a1, input + 2
+    li	    a2, 1
+    li	    v0, SYS_read
+    syscall
     beq     a3, zero, validation_3
     li      v0, 1
     j       exit
@@ -209,11 +209,11 @@ recover_4:
     sb      t1, 2(t3)
 
 write_output:
-	lw	a0, (STACK_SIZE + 4)(sp)
-	la 	a1, output
-	li 	a2, 1
-	li 	v0, SYS_write
-	syscall
+    lw	a0, (STACK_SIZE + 4)(sp)
+    la 	a1, output
+    li 	a2, 1
+    li 	v0, SYS_write
+    syscall
     beq a3, 0, write_val
     li  v0, 1
     j   exit
@@ -223,9 +223,9 @@ write_val:
     beq t0, s3, exit
     lw	a0, (STACK_SIZE + 4)(sp)
 	la 	a1, output + 1
-	li 	a2, 1
-	li 	v0, SYS_write
-	syscall
+    li 	a2, 1
+    li 	v0, SYS_write
+    syscall
     beq a3, 0, write_val_2
     li  v0, 1
     j   exit
@@ -233,11 +233,11 @@ write_val:
 write_val_2:
     li  t0, 1
     beq t0, s3, exit
-	lw	a0, (STACK_SIZE + 4)(sp)
-	la 	a1, output + 2
-	li 	a2, 1
-	li 	v0, SYS_write
-	syscall
+    lw	a0, (STACK_SIZE + 4)(sp)
+    la 	a1, output + 2
+    li 	a2, 1
+    li 	v0, SYS_write
+    syscall
     beq a3, 0, continue_loop
     li  v0, 1
     j   exit
@@ -246,15 +246,15 @@ continue_loop:
     j       read_input
 
 exit:
-	lw  a1,  (STACK_SIZE +  4)(sp)
+    lw  a1,  (STACK_SIZE +  4)(sp)
     lw 	a0,  (STACK_SIZE	   )(sp)
-	lw 	gp,  (STACK_SIZE - 24)(sp)
-	lw 	$fp, (STACK_SIZE - 20)(sp)
-	lw 	ra,  (STACK_SIZE - 16)(sp)
+    lw 	gp,  (STACK_SIZE - 24)(sp)
+    lw 	$fp, (STACK_SIZE - 20)(sp)
+    lw 	ra,  (STACK_SIZE - 16)(sp)
     lw  s3,  (STACK_SIZE - 12)(sp)
     lw  s2,  (STACK_SIZE -  8)(sp)
-	addu 	sp,  sp, STACK_SIZE
-	jr 	ra
+    addu 	sp,  sp, STACK_SIZE
+    jr 	ra
 
 .end    base64_decode
 
@@ -262,9 +262,9 @@ exit:
 .align 2
 
 input:
-	.space  4
-	.byte 	0, 0, 0, 0
+    .space  4
+    .byte 	0, 0, 0, 0
 output:
-	.space  3
-	.byte 	0, 0, 0
+    .space  3
+    .byte 	0, 0, 0
 
