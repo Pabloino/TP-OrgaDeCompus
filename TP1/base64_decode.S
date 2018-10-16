@@ -222,7 +222,7 @@ write_val:
     li  t0, 2
     beq t0, s3, exit
     lw	a0, (STACK_SIZE + 4)(sp)
-	la 	a1, output + 1
+    la 	a1, output + 1
     li 	a2, 1
     li 	v0, SYS_write
     syscall
