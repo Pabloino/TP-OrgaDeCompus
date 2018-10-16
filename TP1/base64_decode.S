@@ -17,24 +17,23 @@
 base64_decode:	
     subu 	sp,  sp, STACK_SIZE
     sw      gp,  (STACK_SIZE - 24)(sp)
-	sw 	    $fp, (STACK_SIZE - 20)(sp)
-	sw 	    ra,  (STACK_SIZE - 16)(sp)
+    sw 	    $fp, (STACK_SIZE - 20)(sp)
+    sw 	    ra,  (STACK_SIZE - 16)(sp)
     sw      s2,  (STACK_SIZE - 12)(sp)
     sw      s3,  (STACK_SIZE - 8)(sp)
-	move    $fp, sp
-	sw 	    a0,  (STACK_SIZE     )(sp)
-	sw 	    a1,  (STACK_SIZE +  4)(sp)
+    move    $fp, sp
+    sw 	    a0,  (STACK_SIZE     )(sp)
+    sw 	    a1,  (STACK_SIZE +  4)(sp)
 
 read_input:
-	lw	    a0, (STACK_SIZE)(sp)
-	la	    a1, input
-	li	    a2, 1
-	li	    v0, SYS_read
-	syscall
+    lw	    a0, (STACK_SIZE)(sp)
+    la	    a1, input
+    li	    a2, 1
+    li	    v0, SYS_read
+    syscall
     beq     a3, zero, validation 
     li      v0, 1
     j       exit
-    
 
 validation:
     li      s2, 0
@@ -44,11 +43,11 @@ validation:
     j       exit
 
 continue_read:
-	lw	    a0, (STACK_SIZE)(sp)
-	la	    a1, input + 1
+    lw	    a0, (STACK_SIZE)(sp)
+    la	    a1, input + 1
 	li	    a2, 1
-	li	    v0, SYS_read
-	syscall
+    li	    v0, SYS_read
+    syscall
     beq     a3, zero, validation_2
     li      v0, 1
     j       exit
