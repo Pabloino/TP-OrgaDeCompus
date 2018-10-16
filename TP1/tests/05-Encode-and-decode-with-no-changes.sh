@@ -1,6 +1,6 @@
-TP_NAME='tp1';
+TP_NAME='main';
 
-TEST_DESCRIPTION='Sending a word, encoding, then decoding and the word must be de same';
+TEST_DESCRIPTION='enviar una palabra, codificarla, y luego de descodificarla debe ser la misma';
 
 ENCODING_WORD='Man';
 

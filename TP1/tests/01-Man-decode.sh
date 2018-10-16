@@ -1,4 +1,4 @@
-TP_NAME='tp1';
+TP_NAME='main';
 
 OUTPUT=`echo -n TWFu | ./$TP_NAME -a decode`;
 TEST_DESCRIPTION='Decoding "TWFu"';

@@ -1,4 +1,4 @@
-TP_NAME='tp1';
+TP_NAME='main';
 
 OUTPUT=`echo -n Man | ./$TP_NAME`;
 TEST_DESCRIPTION='Encoding "Man"';

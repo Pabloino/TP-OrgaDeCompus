@@ -1,7 +1,7 @@
 #include <mips/regdef.h>
 #include <sys/syscall.h>
 
-#define STACK_FRAME_SIZE 24
+#define STACK_SIZE 24
 
 .text
 .abicalls
@@ -15,21 +15,21 @@
 .set		reorder
 
 base64_encode:
-	subu	sp,  sp, STACK_FRAME_SIZE
+	subu	sp,  sp, STACK_SIZE
 
-	sw	gp,  (STACK_FRAME_SIZE - 16)(sp)
-	sw	$fp, (STACK_FRAME_SIZE - 12)(sp)
-	sw	ra,  (STACK_FRAME_SIZE -  8)(sp)
-    sw  s3,  (STACK_FRAME_SIZE -  4)(sp)
+	sw	gp,  (STACK_SIZE - 16)(sp)
+	sw	$fp, (STACK_SIZE - 12)(sp)
+	sw	ra,  (STACK_SIZE -  8)(sp)
+    sw  s3,  (STACK_SIZE -  4)(sp)
     
 	move	$fp, sp
 
-	sw	a0,  (STACK_FRAME_SIZE     )(sp)
-	sw	a1,  (STACK_FRAME_SIZE +  4)(sp)
+	sw	a0,  (STACK_SIZE     )(sp)
+	sw	a1,  (STACK_SIZE +  4)(sp)
 
 read_input:
 
-    la    t0, input_buffer
+    la    t0, input
     sb    zero, 0(t0)
     sb    zero, 1(t0)
     sb    zero, 2(t0)
@@ -38,46 +38,46 @@ read_input:
 
     ## Read 1 char at time avoid endianess problems
 
-	lw	a0, (STACK_FRAME_SIZE)(sp)
-	la	a1, input_buffer
+	lw	a0, (STACK_SIZE)(sp)
+	la	a1, input
 	li	a2, 1
 	li	v0, SYS_read
 	syscall
 
-    beq a3, 0, continue_validation
+    beq a3, 0, validation
     li  v0, 1
     j   exit_base64_encode
 
-continue_validation:    
+validation:    
 
     beqz    v0, exit_base64_encode
     addiu   s3, s3, 1
 
- 	lw	a0, (STACK_FRAME_SIZE)(sp)
- 	la	a1, input_buffer + 1
+ 	lw	a0, (STACK_SIZE)(sp)
+ 	la	a1, input + 1
  	li	a2, 1
  	li	v0, SYS_read
  	syscall
 
-    beq a3, 0, continue_second_validation
+    beq a3, 0, validation2
     li v0, 1
     j   exit_base64_encode
     
-continue_second_validation:
+validation2:
     beqz    v0, encode
     addiu   s3, s3, 1
 
-    lw	a0, (STACK_FRAME_SIZE)(sp)
-    la	a1, input_buffer + 2
+    lw	a0, (STACK_SIZE)(sp)
+    la	a1, input + 2
     li	a2, 1
     li	v0, SYS_read
     syscall
 
-    beq a3, 0, continue_third_validation
+    beq a3, 0, validation3
     li  v0, 1
     j   exit_base64_encode
 
-continue_third_validation:
+validation3:
     beqz    v0, encode
     addiu   s3, s3, 1
 
@@ -89,71 +89,71 @@ continue_third_validation:
 
 encode:
 
-	la	t0, input_buffer
-	la	t1, output_buffer
+	la	t0, input
+	la	t1, output
 
-	lbu	t2, 0(t0) 		# t2 = input[0]
-	srl 	t2, 2 			# input[0] >> 2
-	sb  	t2, 0(t1)		# output[0] = input[0]
+	lbu	t2, 0(t0) 		
+	srl 	t2, 2 			
+	sb  	t2, 0(t1)		
 
-	lbu 	t2, 0(t0)		# t2 = input[0]
-	lbu 	t3, 1(t0)		# t3 = input[1]
-	remu 	t2, t2, 4		# t2 %= 4
-	sll 	t2, 4			# t2 << 4
-	srl 	t3, 4			# t3 >> 4
-	or 	t2, t2, t3		# t2 |= t3
-	sb	t2, 1(t1)		# output[1] = t2
+	lbu 	t2, 0(t0)		
+	lbu 	t3, 1(t0)		
+	remu 	t2, t2, 4		
+	sll 	t2, 4			
+	srl 	t3, 4			
+	or 	t2, t2, t3		
+	sb	t2, 1(t1)	
 
-	lbu	t2, 1(t0)		# t2 = input[1]
-	lbu	t3, 2(t0)		# t3 = input[2]
-	remu	t2, t2, 16		# t2 %= 16
-	sll	t2, 2			# t2 << 2
-	srl	t3, 6			# t3 >> 6
-	or	t2, t2, t3		# t2 |= t3
-	sb	t2, 2(t1)		# output[2] = t2
+	lbu	t2, 1(t0)		
+	lbu	t3, 2(t0)		
+	remu	t2, t2, 16		
+	sll	t2, 2			
+	srl	t3, 6			
+	or	t2, t2, t3	
+	sb	t2, 2(t1)		
 
-	lbu	t2, 2(t0)		# t2 = input[2]
-	remu	t2, t2, 64		# t2 %= 64
-	sb	t2, 3(t1)		# output[3] = t2
+	lbu	t2, 2(t0)		
+	remu	t2, t2, 64		
+	sb	t2, 3(t1)		
 
 translate_to_symbols:
 
-	la	t0, base64chars	# t0 = base64chars
-	la	t1, output_buffer	# t1 = output
-	lbu	t2, 0(t1)		# t2 = output[0]
-	addu	t0, t0, t2		#
-	lb	t0, 0(t0)		# t0 = base64chars[t2]
-	sb	t0, 0(t1)		# output[0] = t0
+	la	t0, base64chars
+	la	t1, output	
+	lbu	t2, 0(t1)		
+	addu	t0, t0, t2		
+	lb	t0, 0(t0)		
+	sb	t0, 0(t1)		
 
-	la	t0, base64chars	# t0 = base64chars
-	la	t1, output_buffer	# t1 = output
-	lbu	t2, 1(t1)		# t2 = output[1]
-	addu	t0, t0, t2		#
-	lb	t0, 0(t0)		# t0 = base64chars[t2]
-	sb	t0, 1(t1)		# output[1] = t0
+	la	t0, base64chars	
+	la	t1, output	
+	lbu	t2, 1(t1)		
+	addu	t0, t0, t2		
+	lb	t0, 0(t0)		
+	sb	t0, 1(t1)		
 
-	la	t0, base64chars	# t0 = base64chars
-	la	t1, output_buffer	# t1 = output
-	lbu	t2, 2(t1)		# t2 = output[2]
-	addu	t0, t0, t2		#
-	lb	t0, 0(t0)		# t0 = base64chars[t2]
-	sb	t0, 2(t1)		# output[2] = t0
+	la	t0, base64chars	
+	la	t1, output	
+	lbu	t2, 2(t1)		
+	addu	t0, t0, t2		
+	lb	t0, 0(t0)		
+	sb	t0, 2(t1)		
 
-	la	t0, base64chars	# t0 = base64chars
-	la	t1, output_buffer	# t1 = output
-	lbu	t2, 3(t1)		# t2 = output[3]
-	addu	t0, t0, t2		#
-	lb	t0, 0(t0)		# t0 = base64chars[t2]
-	sb	t0, 3(t1)		# output[3] = t0
+	la	t0, base64chars	
+	la	t1, output	
+	lbu	t2, 3(t1)		
+	addu	t0, t0, t2		
+	lb	t0, 0(t0)		
+	sb	t0, 3(t1)		
 
-add_padding:
+complete_padding:
     li      t0, 0
     beq     s3, t0, write_output
     li      t0, 3
     beq     s3, t0, write_output
 
     li      t0, '='
-    la      t1, output_buffer
+    la      t1, output
     sb      t0, 3(t1)
 
     li      t2, 2
@@ -164,64 +164,64 @@ add_padding:
 
 write_output:
 
-	lw	a0, (STACK_FRAME_SIZE + 4)(sp)
-	la	a1, output_buffer
+	lw	a0, (STACK_SIZE + 4)(sp)
+	la	a1, output
 	li	a2, 1
 	li	v0, SYS_write
 	syscall
 
-    beq a3, 0, continue_write_val
+    beq a3, 0, write_value
     li  v0, 1
     j   exit_base64_encode
 
-continue_write_val:    
+write_value:    
 
-	lw	a0, (STACK_FRAME_SIZE + 4)(sp)
-	la	a1, output_buffer + 1
+	lw	a0, (STACK_SIZE + 4)(sp)
+	la	a1, output + 1
 	li	a2, 1
 	li	v0, SYS_write
 	syscall
 
-    beq a3, 0, continue_write_second_val
-    li  v0, 1
-    j   exit_base64_encode
-    
-continue_write_second_val:    
-	lw	a0, (STACK_FRAME_SIZE + 4)(sp)
-	la	a1, output_buffer + 2
-	li	a2, 1
-	li	v0, SYS_write
-	syscall
-
-    beq a3, 0, continue_write_third_val
-    li  v0, 1
-    j   exit_base64_encode
-
-continue_write_third_val:
-	lw	a0, (STACK_FRAME_SIZE + 4)(sp)
-	la	a1, output_buffer + 3
-	li	a2, 1
-	li	v0, SYS_write
-	syscall
-
-    beq a3, 0, continue_write_fourth_val
+    beq a3, 0, write_value2
     li  v0, 1
     j   exit_base64_encode
     
-continue_write_fourth_val:
+write_value2:    
+	lw	a0, (STACK_SIZE + 4)(sp)
+	la	a1, output + 2
+	li	a2, 1
+	li	v0, SYS_write
+	syscall
+
+    beq a3, 0, write_value3
+    li  v0, 1
+    j   exit_base64_encode
+
+write_value3:
+	lw	a0, (STACK_SIZE + 4)(sp)
+	la	a1, output + 3
+	li	a2, 1
+	li	v0, SYS_write
+	syscall
+
+    beq a3, 0, write_value4
+    li  v0, 1
+    j   exit_base64_encode
+    
+write_value4:
     li     t0, 3
     bge    t0, s3, read_input
 
 exit_base64_encode:
-	lw	a1,  (STACK_FRAME_SIZE +  4)(sp)
-	lw	a0,  (STACK_FRAME_SIZE     )(sp)
+	lw	a1,  (STACK_SIZE +  4)(sp)
+	lw	a0,  (STACK_SIZE     )(sp)
 
-	lw	gp,  (STACK_FRAME_SIZE - 16)(sp)
-	lw	$fp, (STACK_FRAME_SIZE - 12)(sp)
-	lw	ra,  (STACK_FRAME_SIZE -  8)(sp)
-    lw  s3,  (STACK_FRAME_SIZE -  4)(sp)
+	lw	gp,  (STACK_SIZE - 16)(sp)
+	lw	$fp, (STACK_SIZE - 12)(sp)
+	lw	ra,  (STACK_SIZE -  8)(sp)
+    lw  s3,  (STACK_SIZE -  4)(sp)
 
-	addu	sp,  sp, STACK_FRAME_SIZE
+	addu	sp,  sp, STACK_SIZE
 
 	jr	ra
 
@@ -230,9 +230,9 @@ exit_base64_encode:
 .data
 .align 2
 
-input_buffer:
+input:
 	.space	3
 	.byte	0, 0, 0
-output_buffer:
+output:
 	.space	4
 	.byte	0, 0, 0, 0

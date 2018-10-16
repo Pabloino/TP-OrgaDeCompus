@@ -7,8 +7,8 @@ int base64_decode(int infd, int outfd);
 char* errmsg[4] = {
     "OK",
     "I/O Error",
-    "Decoding Error: Wrong encoded message length.",
-    "Decoding Error: Cannot decode symbol"
+    "Error decodificando: tamanio de codificado incorrecto.",
+    "Error de Decodificacion: no se puede decodificar #"
 };
 
 extern char base64chars[65];

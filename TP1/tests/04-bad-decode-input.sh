@@ -1,9 +1,9 @@
-TP_NAME='tp1';
+TP_NAME='main';
 
 OUTPUT=`echo -n TWFud | ./$TP_NAME -a decode 2>&1 > /dev/null`;
-TEST_DESCRIPTION='Sending wrong decode message size';
+TEST_DESCRIPTION='El decodificador verifica que el largo del input sea correcto';
 
-if [ "$OUTPUT" == "Decoding Error: Wrong encoded message length." ]
+if [ "$OUTPUT" == "Error decodificando: tamanio de codificado incorrecto." ]
 then
   echo "$TEST_DESCRIPTION: OK";
 else
@@ -11,19 +11,9 @@ else
 fi
 
 OUTPUT=`echo -n TWFu== | ./$TP_NAME -a decode 2>&1 > /dev/null`;
-TEST_DESCRIPTION='Sending wrong decode message size with trailing padding';
+TEST_DESCRIPTION='El decodificador verifica que no se envien mas de un padding al final';
 
-if [ "$OUTPUT" == "Decoding Error: Wrong encoded message length." ]
-then
-  echo "$TEST_DESCRIPTION: OK";
-else
-  echo "$TEST_DESCRIPTION: ERROR";
-fi
-
-OUTPUT=`echo -n Te=E | ./$TP_NAME -a decode 2>&1 > /dev/null`;
-TEST_DESCRIPTION='Sending wrong decode message size with wrong padding';
-
-if [ "$OUTPUT" == "Decoding Error: Wrong encoded message length." ]
+if [ "$OUTPUT" == "Error decodificando: tamanio de codificado incorrecto." ]
 then
   echo "$TEST_DESCRIPTION: OK";
 else
@@ -31,9 +21,9 @@ else
 fi
 
 OUTPUT=`echo -n abc\# | ./$TP_NAME -a decode 2>&1 > /dev/null`;
-TEST_DESCRIPTION='Cannot decode non-table symbols';
+TEST_DESCRIPTION='El decodificador muestra error si trata de decodificar un simbolo que no pertenece a la tabla';
 
-if [ "$OUTPUT" == "Decoding Error: Cannot decode symbol" ]
+if [ "$OUTPUT" == "Error de Decodificacion: no se puede decodificar #" ]
 then
   echo "$TEST_DESCRIPTION: OK";
 else

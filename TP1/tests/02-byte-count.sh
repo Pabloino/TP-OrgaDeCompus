@@ -1,7 +1,7 @@
-TP_NAME='tp1';
+TP_NAME='main';
 
-OUTPUT=`yes | head -c 1024 | ./tp1 -a encode | ./tp1 -a decode | wc -c`;
-TEST_DESCRIPTION='Counting "yes" conversion bytes is 1024';
+OUTPUT=`yes | head -c 1024 | ./main -a encode | ./main -a decode | wc -c`;
+TEST_DESCRIPTION='Conteo correcto';
 
 if [ $OUTPUT == 1024 ]
 then
